@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class Astar
 {
-	public static List<Hex> FindPathAstar(Hex startHex, Hex targetHex)
+	public static List<Hex> FindPathHexAstar(Hex startHex, Hex targetHex)
 	{
 		List<Hex> toSearch = new List<Hex>() { startHex };
 		List<Hex> processed = new List<Hex>();
@@ -81,14 +81,12 @@ public static class Astar
 	{
 		var toSearch = new List<AstarNode>() { startNode };
         var processed = new List<AstarNode>();
-		Debug.Log("FindPathAstar Start : " + toSearch[0].Myhex.HexCoords);
 
 		while (toSearch.Any())
 		{
 			AstarNode current = toSearch[0];
 			foreach (var t in toSearch)
 			{
-				Debug.Log("Check Search point F : " + t.F);
 				if (t.F < current.F || t.F == current.F && t.H < current.H)
 					current = t;
 			}
@@ -96,34 +94,55 @@ public static class Astar
 			processed.Add(current);
 			toSearch.Remove(current);
 
-			foreach (var h in processed)
+			if (targetNode.Myhex.IsNonWalkable() || targetNode.Myhex.IsNonMoveable())
 			{
-				Debug.Log("In processed : " + h.Myhex.HexCoords);
-			}
-
-			if (current == targetNode)
-			{
-				Debug.Log("Finish & return PathFinding");
-				var currentPathTile = targetNode;
-				var path = new List<AstarNode>();
-				var count = 100;
-				while (currentPathTile != startNode)
+				foreach (var neighbor in targetNode.Neighbors)
 				{
-					path.Add(currentPathTile);
-					currentPathTile = currentPathTile.Connection;
-					count--;
-					if (count < 0) throw new Exception();
+					if (current == neighbor)
+					{
+						Debug.Log("Finish & return at neighbor PathFinding");
+						var currentPathTile = neighbor;
+						var path = new List<AstarNode>();
+						var count = 100;
+						while (currentPathTile != startNode)
+						{
+							path.Add(currentPathTile);
+							currentPathTile = currentPathTile.Connection;
+							count--;
+							if (count < 0) throw new Exception();
+						}
+						path.Reverse();
+						return path;
+					}
 				}
-
-				return path;
+			}
+			else
+			{
+				if (current == targetNode)
+				{
+					Debug.Log("Finish & return PathFinding");
+					var currentPathTile = targetNode;
+					var path = new List<AstarNode>();
+					var count = 100;
+					while (currentPathTile != startNode)
+					{
+						path.Add(currentPathTile);
+						currentPathTile = currentPathTile.Connection;
+						count--;
+						if (count < 0) throw new Exception();
+					}
+					path.Reverse();
+					Debug.Log("path ----------------------");
+					foreach (var h in path)
+						Debug.Log(h.Myhex.HexCoords);
+					return path;
+				}
 			}
 
-			Debug.Log("Checking UnitType & distance");
-			foreach (var neighbor in current.Neighbors.Where(t => !t.Myhex.IsNonMoveable() && !processed.Contains(t)))
+			foreach (var neighbor in current.Neighbors.Where(t => !processed.Contains(t)))
 			{
 				var inSearch = toSearch.Contains(neighbor);
 				var costToNeighbor = current.G + current.GetDistance(neighbor.Myhex.HexCoords);
-				Debug.Log("cost G : " + costToNeighbor);
 
 				if (!inSearch || costToNeighbor < neighbor.G)
 				{
@@ -134,7 +153,6 @@ public static class Astar
 					{
 						neighbor.SetH(neighbor.GetDistance(targetNode.Myhex.HexCoords));
 						toSearch.Add(neighbor);
-						Debug.Log("Search by AstarNode : " + toSearch[0].Myhex.HexCoords);
 					}
 				}
 			}

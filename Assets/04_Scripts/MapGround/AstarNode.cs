@@ -6,8 +6,8 @@ using TMPro;
 
 public class AstarNode : MonoBehaviour
 {
-	[SerializeField]
-	private TextMeshPro _F, _G, _H;
+	// [SerializeField]
+	// private TextMeshPro _F, _G, _H;
 	private HexGrid MyGrid;
 	public Hex Myhex;
 	public AstarNode Connection { get; private set; }
@@ -39,7 +39,7 @@ public class AstarNode : MonoBehaviour
 	}
 	private void Update()
 	{
-		_F.text = F.ToString();
+		// _F.text = F.ToString();
 	}
 #endregion
 
@@ -55,13 +55,13 @@ public class AstarNode : MonoBehaviour
 	public void SetG(float g)
 	{
 		G = g;
-		_G.text = g.ToString();
+		// _G.text = g.ToString();
 	}
 
 	public void SetH(float h)
 	{
 		H = h;
-		_H.text = h.ToString();
+		// _H.text = h.ToString();
 	}
 #endregion
 

@@ -79,6 +79,12 @@ public class HexGrid : MonoBehaviour
 
 		return hexTileNeighborsDict[hexCoordinates];
 	}
+
+	public Vector3Int GetClosestHex(Vector3 worldposition)
+	{
+		worldposition.y = 0;
+		return HexCoordinates.ConvertPositionToOffset(worldposition);
+	}
 #endregion
 }
 

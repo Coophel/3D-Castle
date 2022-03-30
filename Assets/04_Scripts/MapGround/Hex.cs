@@ -9,10 +9,10 @@ public class Hex : MonoBehaviour
 	private GlowHighlight highlight;
     private HexCoordinates hexCoordinates;
 
-	private HexGrid myGrid;
+	private HexGrid _myGrid;
 
 	[SerializeField]
-	private HexType tileType;
+	private HexType _tileType;
 
 #region For AStar pathfinding - variable // will move to AstarNode
 	public Hex Connection { get; private set; }
@@ -29,13 +29,9 @@ public class Hex : MonoBehaviour
 	{
 		hexCoordinates = GetComponent<HexCoordinates>();
 		highlight = GetComponent<GlowHighlight>();
-		myGrid = GetComponentInParent<HexGrid>();
+		_myGrid = GetComponentInParent<HexGrid>();
 	}
 
-	private void Start()
-	{
-		// Neighbors = myGrid.GetNeighboursHex(this.HexCoords);
-	}
 #endregion
 
 #region Public Functions
@@ -49,27 +45,39 @@ public class Hex : MonoBehaviour
 	{
 		return AxialLength(this.HexCoords - target);
 	}
-
+	public void ChangeType(HexType type)
+	{
+		this._tileType = type;
+	}
+	public HexType GettileType()
+	{
+		return this._tileType;
+	}
 	public int GetTileValue()
-		=> tileType switch
+		=> _tileType switch
 		{
 			HexType.Walkable => 1,
 			HexType.NonWalkable => 2,
 			HexType.Activetile => 1,
-			_ => throw new Exception($"Hex type {tileType} not supported")
+			_ => throw new Exception($"Hex type {_tileType} not supported")
 		};
 	public int GetTileCost()
-		=> tileType switch
+		=> _tileType switch
 		{
 			HexType.Walkable => 1,
 			HexType.NonWalkable => 2,
 			HexType.Activetile => 1,
-			_ => throw new Exception($"Hex type {tileType} not supported")
+			_ => throw new Exception($"Hex type {_tileType} not supported")
 		};
 	public bool IsNonMoveable()
 	{
-		return this.tileType == HexType.NonFlyable;
+		return this._tileType == HexType.NonFlyable;
 	}
+	public bool IsNonWalkable()
+	{
+		return this._tileType == HexType.NonWalkable;
+	}
+
 	public void EnableHighlight()
 	{
 		highlight.ToggleGlow(true);

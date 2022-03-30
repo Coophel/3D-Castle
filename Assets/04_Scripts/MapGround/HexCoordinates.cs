@@ -19,8 +19,8 @@ public class HexCoordinates : MonoBehaviour
 	}
 #endregion
 
-#region Private Functions
-	private Vector3Int ConvertPositionToOffset(Vector3 position)
+#region public Functions
+	public static Vector3Int ConvertPositionToOffset(Vector3 position)
 	{
 		// RoundToInt can`t care of even of x so we have to use other solutions;
 		// int x = Mathf.RoundToInt(position.x / xOffset);
